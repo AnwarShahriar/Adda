@@ -10,5 +10,6 @@ server.listen(port);
 console.log('Server started at port: ' + port);
 
 app.get('/', function(req, res) {
+    console.log('Serving request');
     res.sendFile(__dirname + '/index.html');
-})
+});
