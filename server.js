@@ -9,19 +9,23 @@ var port = process.env.PORT || 3000;
 server.listen(port);
 console.log('Server started at port: ' + port);
 
+app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.sockets.on('connection', function(socket) {
+io.on('connection', function(socket) {
     connections.push(socket);
+    console.log('Connection, current size is: ' + connections.length);
 
     socket.on('disconnect', function(data) {
-        console.log('Disconnection, current size is: ' + connections.length);
         connections.splice(connections.indexOf(socket), 1);
+        console.log('Disconnection, current size is: ' + connections.length);
     });
 
-    socket.on('new-message', function(data) {
+    socket.on('send-message', function(data) {
         console.log(data);
+        io.emit('new-message', { msg: data });
     });
 });
