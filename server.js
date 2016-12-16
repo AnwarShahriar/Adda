@@ -10,6 +10,18 @@ server.listen(port);
 console.log('Server started at port: ' + port);
 
 app.get('/', function(req, res) {
-    console.log('Serving request');
     res.sendFile(__dirname + '/index.html');
+});
+
+io.sockets.on('connection', function(socket) {
+    connections.push(socket);
+
+    socket.on('disconnect', function(data) {
+        console.log('Disconnection, current size is: ' + connections.length);
+        connections.splice(connections.indexOf(socket), 1);
+    });
+
+    socket.on('new-message', function(data) {
+        console.log(data);
+    });
 });
